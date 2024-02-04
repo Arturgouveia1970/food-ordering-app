@@ -6,11 +6,14 @@ import Image from "next/image";
 
 const Header = () => {
   const session = useSession();
-  console.log(session);
+  const status = session.status;
   const userData = session.data?.user;
   let userName = userData?.name || userData?.email;
   const userImage = userData?.image;
-  const status = session.status;
+  if (userName && userName.includes(' ')) {
+    userName = userName.split(' ')[0];
+  }
+  
   const newLocal = <Link href={"/profile"}>
     <Image className="rounded-full" src={userImage} alt={userName} width={40} height={40} />
   </Link>;
