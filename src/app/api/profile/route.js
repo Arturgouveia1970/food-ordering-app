@@ -9,17 +9,17 @@ export async function PUT(req) {
   const session = await getServerSession(authOptions);
   const email  = session?.user?.email;
 
+  await User.updateOne({email}, data);
 
-  console.log({session, data});
-
-  // const user = await User.findOne({email});
-  console.log('name' in data);
-  if ('name' in data) {
-    
-    const result = await User.updateOne({email}, {name:data.name});
-    console.log({email, update:{name:data.name}}, result);
-    
-  }
-
-  return Response.json(true);
+  return Response.json(true);    
 }
+
+export async function GET() {
+  mongoose.connect(process.env.MONGO_URL);
+  const session = await getServerSession(authOptions);
+  const email = session.User.email;
+  return Response.json(
+    await User.findOne({email})
+  )
+}
+
