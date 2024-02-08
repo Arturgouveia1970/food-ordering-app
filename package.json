@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^2.2.0",
+    "@aws-sdk/client-s3": "^3.507.0",
     "bcrypt": "^5.1.1",
     "esm": "^3.2.25",
     "mongodb": "^6.3.0",
@@ -19,6 +20,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-hot-toast": "^2.4.1",
+    "uniqid": "^5.4.0",
     "uniqueid": "^1.0.0"
   },
   "devDependencies": {

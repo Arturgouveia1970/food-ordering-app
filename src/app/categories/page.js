@@ -1,30 +1,106 @@
-'use client';
-import React, { useEffect, useState } from 'react';
-import UserTabs from '/src/components/layout/UserTabs';
+"use client";
+import React, { useEffect, useState } from "react";
+import UserTabs from "/src/components/layout/UserTabs";
+import useProfile from "/src/components/useProfile";
+import toast from "react-hot-toast";
 
 const CategoriesPage = () => {
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [categoryName, setCategoryName] = useState('');
+  const [categories, setCategories] = useState([]);
+  const { loading: profileLoading, data: profileData } = useProfile();
+  const [editedCategory, setEditedCategory] = useState(null);
 
   useEffect(() => {
-    fetch('/api/profile').then(response => {
-      response.json().then(data => {
-        setIsAdmin(data.admin);
+    fetchCategories();
+  }, [])
+
+  function fetchCategories() {
+    fetch('/api/categories').then(res => {
+      res.json().then(categories => {
+        setCategories(categories);
       })
     })
-  }, []);
-
-  if (!isAdmin) {
-    return 
-      <div>
-        You must be logged in as an admin to view this page.
-      </div>;
   }
+
+  function handleCategorySubmit(ev) {
+    ev.preventDefault();
+    const creationPromise = new Promise(async (resolve, reject) => {
+      const data = {name: categoryName};
+      if (editedCategory) {
+        data._id = editedCategory._id;
+      }
+      const response = await fetch('/api/categories', {
+        method: editedCategory ?  'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      setCategoryName('');
+      fetchCategories();
+      setEditedCategory(null);      
+      if (response.ok) 
+        resolve()
+      else
+        reject();
+    });
+    toast.promise(creationPromise, {
+      loading: editedCategory
+        ? 'Updating category...' : 'Creating new category...',
+      success: editedCategory
+        ? 'Category updated!' : 'Category created!',
+      error: 'Error, sorry...',
+    });
+    
+  }
+
+  if (profileLoading) {
+    return "Loading user info...";
+  }
+
+  if (!profileData.admin) {
+    return 'Not a admin';
+  }
+
   return (
-    <section className='mt-8 max-w-lg mx-auto'>
+    <section className="mt-8 max-w-md mx-auto">
       <UserTabs isAdmin={true} />
-      categories
+      <form className="mt-8" onSubmit={handleCategorySubmit}>
+        <div className="flex gap-2 items-end">
+          <div className="grow">
+            <label>
+              {editedCategory ? 'Update category' : 'New category name'}
+              {editedCategory && (
+                <>: <b>{editedCategory.name}</b></>
+              )}
+            </label>
+            <input 
+              type="text" 
+              value={categoryName}
+              onChange={ev => setCategoryName(ev.target.value)}                
+            />
+          </div>
+          <div className="pb-2">
+            <button className=" border border-primary" type="submit">
+              {editedCategory ? 'Update' : 'Create'}
+            </button>
+          </div>
+        </div>        
+      </form>
+      <div>
+        <h2 className="mt-8 text-sm text-gray-500 ">Edit category:</h2>
+        {categories?.length > 0 && categories.map(c => (
+          <button
+            onClick={() => {
+              setCategoryName(c.name);
+              setEditedCategory(c);
+            }}
+            className="bg-gray-200 rounded-xl p-2 px-4 gap-1 flex cursor-pointer mb-1"
+          >
+            <span>{c.name}</span>  
+          </button>
+        ))}
+      </div>
     </section>
-  )
-}
+  );
+};
 
 export default CategoriesPage;

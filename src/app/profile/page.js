@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import UserTabs from '/src/components/layout/UserTabs';
+import EditableImage from '/src/components/layout/EditableImage';
 
 export default function ProfilePage() {
   const session = useSession();
@@ -64,18 +65,7 @@ export default function ProfilePage() {
       error: "Error",
     });
   }
-  // async function handleFileChange(ev) {
-  //   const files = ev.target.files;
-  //   if (files?.length === 1) {
-  //     const data = new FormData;
-  //     data.set('file', files[0]);
-  //     await fetch('/api/upload', {
-  //       method: 'POST',
-  //       body: data,
-  //       // headers: {'Content-type': 'multipart/form-data'}
-  //     })
-  //   }
-  // }
+  
 
   if (status === "loading" || !profileFetched) {
     return "loading...";
@@ -99,7 +89,8 @@ export default function ProfilePage() {
                 width={250}
                 height={250}
                 alt={"avatar"}
-              />
+              /> 
+              {/* <EditableImage link={Image} setLink={setImage} /> */}
               <label>
                 <input className="hidden" type="file" />
                 <span className="block border border-gray-300 cursor-pointer rounded-lg p-2 text-center">
