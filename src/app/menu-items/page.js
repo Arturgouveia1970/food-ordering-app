@@ -1,24 +1,26 @@
 'use client'
-import UserTabs from '/src/components/layout/UserTabs';
-import useProfile from '/src/components/useProfile';
-import EditableImage from '/src/components/layout/EditableImage';
-import { useState } from 'react';
+import Link from 'next/link';
+import useProfile from '@/components/UseProfile';
+import UserTabs from '@/components/layout/UserTabs'
+import Right from '@/components/icons/Right';
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 export default function MenuItemsPage() {
-
+  const [menuItems, setMenuItems] = useState([]);
   const {loading, data} = useProfile();
-  const [image, setImage] = useState('');
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [basePrice, setBasePrice] = useState(''); 
-
-  async function handleFormSubmit(ev) {
-    ev.preventDefault();
-
-  }
+  
+  useEffect(() => {
+    fetch('/api/menu-items').then(res => {
+      res.json().then(menuItems => {
+       setMenuItems(menuItems); 
+      });
+    })
+  }, []);
+  
 
   if (loading) {
-    return 'Loading...';
+    return 'Loading user info...';
   }
 
   if (!data.admin) {
@@ -26,34 +28,29 @@ export default function MenuItemsPage() {
   }
 
   return (
-    <section className='mt-8'>
+    <section className='mt-8 max-w-md mx-auto'>
       <UserTabs isAdmin={true} />
-      <form onSubmit={handleFormSubmit} className='mt-8 max-w-md mx.auto'>
-      <div 
-        className='grid items-start gap-4' 
-        style={{gridTemplateColumns: '3fr .7fr'}}
-      >
-        <div>
-          <img
-            className="rounded-lg w-full h-full mb-1"
-            src={"/supreme.jpeg"}
-            width={250}
-            height={250}
-            alt={"avatar"}
-          /> 
-        </div>
-        
-        <div className='grow'>
-          <label>Item name</label>
-          <input type='text' value={name} onChange={e => setName(e.target.value)}/>
-          <label>Description</label>
-          <input type='text' value={description} onChange={e => setDescription(e.target.value)}/>
-          <label>Base Price</label>
-          <input type='text' value={basePrice} onChange={e => setBasePrice(Number(e.target.value))}/>
-          <button className='mb-2' type='submit'>Save</button>
-        </div>
+      <div className='mt-8'>
+        <Link
+          className='button'
+          href={'/menu-items/new'}
+        >
+          Create new item
+          <Right /> 
+        </Link>
       </div>
-      </form>
+      <div>
+        <h2 className='text-sm text-gray-500 mt-8'>Edit menu item</h2>
+        {menuItems?.length > 0 && menuItems.map(item => (
+          <Link key={item._id} href={'/menu-items/edit/'+item._id} className="mb-1 button">
+            <div className='relative w-24 h-24'>
+              <Image src={item.image} alt={item.name} layout={'fill'} />
+            </div>
+            {item.name}
+          </Link>
+        ))}
+      </div>
+      
     </section>
     
   );

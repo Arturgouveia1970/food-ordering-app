@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import UserTabs from "/src/components/layout/UserTabs";
-import useProfile from "/src/components/useProfile";
+import useProfile from "/src/components/UseProfile";
 import toast from "react-hot-toast";
 
 const CategoriesPage = () => {
@@ -93,7 +93,7 @@ const CategoriesPage = () => {
               setCategoryName(c.name);
               setEditedCategory(c);
             }}
-            className="bg-gray-200 rounded-xl p-2 px-4 gap-1 flex cursor-pointer mb-1"
+            className="rounded-xl p-2 px-4 gap-1 flex cursor-pointer mb-1"
           >
             <span>{c.name}</span>  
           </button>

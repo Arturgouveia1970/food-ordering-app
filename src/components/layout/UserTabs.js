@@ -24,7 +24,7 @@ const UserTabs = ({isAdmin}) => {
           </Link>
           <Link 
             href={'/menu-items'}
-            className={path === '/menu-items' ? 'active' : ''} 
+            className={/menu-items/.test(path) ? 'active' : ''} 
           >
             Menu Items
           </Link>
