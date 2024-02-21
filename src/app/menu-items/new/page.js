@@ -7,11 +7,12 @@ import Left from "@/components/icons/Left";
 import { redirect } from "next/navigation";
 import toast from "react-hot-toast";
 import Image from "next/image";
+import { postMenuItem, getMenuItem, createMenuItem } from "@/app/api/menu-items/route";
 
 export default function NewMenuItemPage() {
   const {loading, data} = useProfile();
   const [name, setName] = useState('');
-  const [imageFile, setImageFile] = useState('');
+  const [imageFile, setImageFile] = useState(null);
   const [description, setDescription] = useState('');
   const [basePrice, setBasePrice] = useState('');
   const [redirectToItems, setRedirectToItems] = useState(false);
@@ -20,27 +21,38 @@ export default function NewMenuItemPage() {
   async function handleFormSubmit(ev) {
     ev.preventDefault();
     const formData = new FormData();
-    const image = formData.append('image', imageFile);
-    const data = { image, name,  description, basePrice };
+    formData.append('image', imageFile);
+    formData.append('name', name);
+    formData.append('description', description);
+    formData.append('basePrice', basePrice);
+  
     const savingPromise = new Promise(async (resolve, reject) => {
       const response = await fetch('/api/menu-items', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),             
+        headers: { 'Content-Type': 'multipart/form-data' },
+        body: formData,
+        // middleware: createMenuItem,
       });
-      if (response.ok)
+      console.log(response);
+      // if (!response.ok) {
+      //   reject(new Error(`HTTP error! status: ${response.status}`));
+      // }
+      // const text = await response.json();
+      // resolve(text.id);
+      if (response.ok) {
         resolve();
-      else 
+      } else {
         reject();
+      }
     });
+  
     await toast.promise(savingPromise, {
       loading: 'Saving this tasty item',
       success: 'Saved',
-      error: 'error saving'
-    });  
-    
+      error: 'error saving',
+    });
+  
     setRedirectToItems(true);
-   
   }
 
   if (redirectToItems) {
@@ -76,10 +88,10 @@ export default function NewMenuItemPage() {
           {imageFile && (
             <Image
               className="rounded-lg w-full h-full mb-1"
-              src={URL.createObjectURL(imageFile)}
-              width={24}
-              height={24}
-              alt={"avatar"}
+              src={imageFile ? URL.createObjectURL(imageFile) : null}
+              width={200}
+              height={200}
+              alt={`${name} preview`}
             /> 
           )}
         </div>

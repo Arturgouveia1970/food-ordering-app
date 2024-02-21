@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -13,10 +13,13 @@ const Header = () => {
   if (userName && userName.includes(' ')) {
     userName = userName.split(' ')[0];
   }
-  
-  const newLocal = <Link href={"/profile"}>
-    <Image className="rounded-full" src={userImage} alt={userName} width={40} height={40} />
-  </Link>;
+
+  const newLocal = (
+    <Link href={"/profile"}>
+      <Image className="rounded-full" src={userImage} alt={userName} width={40} height={40} />
+    </Link>
+  );
+
   return (
     <>
       <header className="flex items-center justify-between ">
@@ -32,7 +35,7 @@ const Header = () => {
         <nav className="flex gap-4 text-gray-500 font-semibold items-center">
           {status === "authenticated" && (
             <>
-              <div className="rounded-full">{newLocal}</div>              
+              <div className="rounded-full">{newLocal}</div>
               <button
                 onClick={() => signOut()}
                 className="bg-primary rounded-full text-white px-8 py-2"

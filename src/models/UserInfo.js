@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import {model, models, Schema} from "mongoose";
 
 const UserInfoSchema = new Schema({
@@ -10,4 +11,4 @@ const UserInfoSchema = new Schema({
   admin: {type: Boolean, default: false},
 }, {timestamps: true});
 
-export const UserInfo = models?.UserInfo || model('UserInfo', UserInfoSchema);
+export const UserInfo = models?.UserInfo || mongoose.model('UserInfo', UserInfoSchema);

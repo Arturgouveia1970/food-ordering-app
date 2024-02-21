@@ -31,7 +31,8 @@ const Hero = () => {
           src={'/pizza.png'} 
           layout={'fill'} 
           objectFit={'contain'} 
-          alt='pizza' 
+          alt='pizza'
+          sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
         />
       </div>
     </section>

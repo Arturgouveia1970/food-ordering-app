@@ -9,9 +9,26 @@ const nextImageConfig = {
   ],
 };
 
-nextConfig.default.images = {
-  ...nextConfig.default.images,
-  ...nextImageConfig,
+const api = {
+  bodyParser: false,
+  bodyParserMiddleware: (req, res, next) => {
+    if (req.url !== '/api/menu-items') {
+      return next();
+    }
+
+    const bodyParser = require('body-parser');
+    const jsonParser = bodyParser.json();
+    jsonParser(req, res, next);
+  },
+};
+
+nextConfig.default = {
+  ...nextConfig.default,
+  ...api,
+  images: {
+    ...nextConfig.default.images,
+    ...nextImageConfig,
+  },
 };
 
 export default nextConfig.default;
